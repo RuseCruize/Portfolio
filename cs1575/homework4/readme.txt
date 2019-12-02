@@ -1,0 +1,1 @@
+Abstract queue implementation. 
