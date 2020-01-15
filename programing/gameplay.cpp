@@ -61,6 +61,9 @@ class dropTable{
 	
 	//remove memory leaks when the data structure is destroyed
 	~dropTable(){
+		for(int i = 0; i == numberOfTables - 1; i++){
+			delete [] dropRates[i];
+		}
 		delete [] dropRates;
 	}
 
@@ -74,7 +77,6 @@ class dropTable{
 };
 
 void SpawnLoot(dropTable killedMob){
-	//needs to know all possible drops and percents
 	float rng;
 	bool itemDropped = false;
 	for(int j = 0; j < killedMob.numberOfTables; j++){	
@@ -95,7 +97,7 @@ void SpawnLoot(dropTable killedMob){
 }
 
 int main(){
-	//it seems best to declare drop tables like this, despite the manual nature of the declarations, 
+	//it seems best to declare drop tables like this, since it would always be manual
 	dropTable goblin(1);
 	dropTable skeleton(2);
 	dropTable dragon(3);	
