@@ -1,3 +1,4 @@
+//overall implementation is designed for general case solutions
 using namespace std;
 #include <cstdlib>
 #include <ctime>
@@ -17,6 +18,7 @@ enum TreasureItem{
 		NUM_TREASURE_ITEMS
 };
 
+//this array is for converting integers into the equivalent items
 char *Treasures[] = {
 	"TREASURE_GOLD_PILE",
 	"TREASURE_RUSTY_SWORD",
@@ -40,17 +42,18 @@ float RandFloat(void){
 	float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 }
 
+//The main data structure for holding drop tables. Stores drops in dynamically allocated 2 dimensional arrays
 class dropTable{
 	public:
-	//make an array with elements equal to drop table and then record drop rates
-	//float dropRates [NUM_TREASURE_ITEMS] = {0};	
 	float **dropRates;
 	int numberOfTables;
 
 	//allows monsters to initialize with any sized dropped tables
+	//for example, the skeleton drops 2 times, each with a different table. This constructor creates the specified amount of dropRates arrays
 	dropTable(int numberOfDropTables){
 		dropRates = new float* [numberOfDropTables];
 		for(int i = 0; i < numberOfDropTables; i++){
+			//adding an extra row to be used later
 			dropRates[i] = new float[NUM_TREASURE_ITEMS + 1];
 			for(int j = 0; j < NUM_TREASURE_ITEMS; j++){
 				dropRates[i][j] = 0;
@@ -67,8 +70,7 @@ class dropTable{
 		delete [] dropRates;
 	}
 
-	//allows 2 drop tables to be added together as well as an additional argument for the percntage of the added table
-	//i.e. a Godly Sword (50%) OR whatever a Skeleton would normally drop (50%)
+	//allows 2 drop tables to be added together, such as with the dragon who shares drop tables with the skeleton
 	void addTables(int column, dropTable &a, int dropTableColumn){
 		for(int i = 0; i < NUM_TREASURE_ITEMS + 1; i++){
 			dropRates[column][i] += a.dropRates[dropTableColumn][i];
@@ -76,19 +78,24 @@ class dropTable{
 	}	
 };
 
+//the function used for determining which items are dropped
+//used pass by reference to avoid problems with pointers
 void SpawnLoot(dropTable &killedMob){
 	float rng;
 	bool itemDropped = false;
 	for(int j = 0; j < killedMob.numberOfTables; j++){	
 		itemDropped = false;	
 		rng = RandFloat();
+		//after rolling a random number 1-0 it iterates through the first dropRate array, checking to see which item drops
 		for(int i = 0; i < NUM_TREASURE_ITEMS + 1; i++){
 			rng -= killedMob.dropRates[j][i];
 			if(rng < 0 && !itemDropped){
 				itemDropped = true;
 				SpawnTreasureItem((TreasureItem) i);
-				cout << i << endl;
+				cout << Treasures[i] << endl;
 			}
+		//here is where the addittional row comes into play. when it equals 0 it is treated as an OR, if its a 1 it treats it as an AND
+		//this allows for control over how many drops occur and allows for having multiple possible drop tables that only occur exclusively
 		}if(itemDropped && killedMob.dropRates[j][NUM_TREASURE_ITEMS + 1] == 0){
 			return;
 		}
@@ -114,8 +121,12 @@ int main(){
 	dragon.addTables(1, skeleton, 0);
 	dragon.addTables(2, skeleton, 1);
 	dragon.dropRates[1][NUM_TREASURE_ITEMS + 1] = 1;
+	//while a cout like this would not be used it is added for testing purposes
+	cout << "A Goblin died and dropped: ";
 	SpawnLoot(goblin);
+	cout << endl << "A Skeleton died and dropped: ";
 	SpawnLoot(skeleton);	
+	cout << endl << "A Dragon died and dropped: ";
 	SpawnLoot(dragon);
 	
 	return 0;
