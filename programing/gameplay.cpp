@@ -33,6 +33,8 @@ void SpawnTreasureItem(TreasureItem eItem){
 
 }
 
+
+//RandFloat was implemented for testing purposes
 float RandFloat(void){
 	srand (static_cast <unsigned> (time(0)));
 	float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -93,6 +95,7 @@ void SpawnLoot(dropTable killedMob){
 }
 
 int main(){
+	//it seems best to declare drop tables like this, despite the manual nature of the declarations, 
 	dropTable goblin(1);
 	dropTable skeleton(2);
 	dropTable dragon(3);	
@@ -109,6 +112,8 @@ int main(){
 	dragon.addTables(1, skeleton, 0);
 	dragon.addTables(2, skeleton, 1);
 	dragon.dropRates[1][NUM_TREASURE_ITEMS + 1] = 1;
+	SpawnLoot(goblin);
+	SpawnLoot(skeleton);	
 	SpawnLoot(dragon);
 	
 	return 0;
