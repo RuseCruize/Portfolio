@@ -121,7 +121,7 @@ int main(){
 	dragon.addTables(1, skeleton, 0);
 	dragon.addTables(2, skeleton, 1);
 	dragon.dropRates[1][NUM_TREASURE_ITEMS + 1] = 1;
-	//while a cout like this would not be used it is added for testing purposes
+	//while a cout like this would not be used it is added for testing and demonstration purposes
 	cout << "A Goblin died and dropped: ";
 	SpawnLoot(goblin);
 	cout << endl << "A Skeleton died and dropped: ";
