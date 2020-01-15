@@ -69,14 +69,14 @@ class dropTable{
 
 	//allows 2 drop tables to be added together as well as an additional argument for the percntage of the added table
 	//i.e. a Godly Sword (50%) OR whatever a Skeleton would normally drop (50%)
-	void addTables(int column, dropTable a, int dropTableColumn){
+	void addTables(int column, dropTable &a, int dropTableColumn){
 		for(int i = 0; i < NUM_TREASURE_ITEMS + 1; i++){
 			dropRates[column][i] += a.dropRates[dropTableColumn][i];
 		}		
 	}	
 };
 
-void SpawnLoot(dropTable killedMob){
+void SpawnLoot(dropTable &killedMob){
 	float rng;
 	bool itemDropped = false;
 	for(int j = 0; j < killedMob.numberOfTables; j++){	
